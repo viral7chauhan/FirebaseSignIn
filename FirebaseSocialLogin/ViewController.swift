@@ -11,6 +11,7 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import Firebase
 import GoogleSignIn
+import TwitterKit
 
 class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate {
 
@@ -45,22 +46,53 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
         return button
     }()
     
+    
+    lazy var twitterLoginButton: TWTRLogInButton = {
+        let logInButton =  TWTRLogInButton { (session, error) in
+            if let err = error {
+                print(err)
+            }
+
+            if let twtrsession = session {
+                print(twtrsession)
+                let token = twtrsession.authToken
+                let secret = twtrsession.authTokenSecret
+                let credential = TwitterAuthProvider.credential(withToken: token, secret: secret)
+                Auth.auth().signIn(with: credential) { (user, error) in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    if let user = user {
+                        print("Twitter user is login",user)
+                    }
+                }
+                
+            }
+        }
+        logInButton.translatesAutoresizingMaskIntoConstraints = false
+        return logInButton
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         fbLoginButton.delegate = self
         fbLoginButton.readPermissions = ["public_profile", "email"]
         
-        [fbLoginButton, customFbLoginButton, googleSignInButton, customGoogleSingInButton].forEach{view.addSubview($0)}
+        [fbLoginButton, customFbLoginButton, googleSignInButton, customGoogleSingInButton, twitterLoginButton].forEach{view.addSubview($0)}
         
         customFbLoginButton.addTarget(self, action: #selector(handleFBLoginClick), for: UIControlEvents.touchUpInside)
-        
         customGoogleSingInButton.addTarget(self, action: #selector(handleGoogleLoginClick), for: .touchUpInside)
-        
+
+       
         GIDSignIn.sharedInstance().uiDelegate = self
+        
         prepareButtons()
     }
 
+    
+    
     @objc func handleFBLoginClick (){
         FBSDKLoginManager().logIn(withReadPermissions: ["public_profile", "email"], from: self) { (response, error) in
             if error != nil {
@@ -120,7 +152,14 @@ extension ViewController {
     func prepareButtons() {
         fbLoginButtons()
         googleButtons()
-        
+        twitterButtons()
+    }
+    
+    fileprivate func twitterButtons() {
+       twitterLoginButton.leadingAnchor.constraint(equalTo: fbLoginButton.leadingAnchor).isActive = true
+        twitterLoginButton.trailingAnchor.constraint(equalTo: fbLoginButton.trailingAnchor).isActive = true
+        twitterLoginButton.heightAnchor.constraint(equalToConstant: 100)
+        twitterLoginButton.topAnchor.constraint(equalTo: customGoogleSingInButton.bottomAnchor, constant: 20).isActive = true
     }
     
     fileprivate func googleButtons() {
