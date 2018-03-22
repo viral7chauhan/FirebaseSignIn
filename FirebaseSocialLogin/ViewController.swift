@@ -15,28 +15,33 @@ import TwitterKit
 
 class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate {
 
-    let fbLoginButton: FBSDKLoginButton = {
+    // MARK: Stored properties
+    lazy var fbLoginButton: FBSDKLoginButton = {
         let button = FBSDKLoginButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .red
+        button.readPermissions = ["public_profile", "email"]
+        button.delegate = self
         return button
     }()
     
-    let customFbLoginButton: UIButton = {
+    lazy var customFbLoginButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .blue
         button.setTitle("Custom FB login", for: UIControlState.normal)
         button.setTitleColor(.white, for: .normal)
+        button.addTarget(self, action: #selector(handleFBLoginClick), for: UIControlEvents.touchUpInside)
         return button
     }()
     
-    let customGoogleSingInButton: UIButton = {
+    lazy var customGoogleSingInButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .orange
         button.setTitle("Custom Google login", for: UIControlState.normal)
         button.setTitleColor(.white, for: .normal)
+        button.addTarget(self, action: #selector(handleGoogleLoginClick), for: .touchUpInside)
         return button
     }()
     
@@ -67,32 +72,25 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
                         print("Twitter user is login",user)
                     }
                 }
-                
             }
         }
         logInButton.translatesAutoresizingMaskIntoConstraints = false
         return logInButton
     }()
     
+    
+    //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        fbLoginButton.delegate = self
-        fbLoginButton.readPermissions = ["public_profile", "email"]
-        
         [fbLoginButton, customFbLoginButton, googleSignInButton, customGoogleSingInButton, twitterLoginButton].forEach{view.addSubview($0)}
-        
-        customFbLoginButton.addTarget(self, action: #selector(handleFBLoginClick), for: UIControlEvents.touchUpInside)
-        customGoogleSingInButton.addTarget(self, action: #selector(handleGoogleLoginClick), for: .touchUpInside)
-
-       
-        GIDSignIn.sharedInstance().uiDelegate = self
-        
         prepareButtons()
+        
+        GIDSignIn.sharedInstance().uiDelegate = self
     }
 
     
     
+    //MARK: Target actions
     @objc func handleFBLoginClick (){
         FBSDKLoginManager().logIn(withReadPermissions: ["public_profile", "email"], from: self) { (response, error) in
             if error != nil {
@@ -109,6 +107,9 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
     }
     
     
+    
+    
+    //MARK: FBSDKLoginButtonDelegate methods
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
         print("Did you logout")
     }
@@ -123,8 +124,9 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
         showEmailAddress()
     }
 
+    
+    //MARK: Custom methods
     func showEmailAddress() {
-        
         let credentials = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
         Auth.auth().signIn(with: credentials) { (user, error) in
             if let error = error {
@@ -147,6 +149,8 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
         }
     }
 }
+
+// MARK: Extension
 extension ViewController {
     
     func prepareButtons() {
