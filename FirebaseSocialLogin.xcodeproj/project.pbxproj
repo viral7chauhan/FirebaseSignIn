@@ -14,6 +14,8 @@
 		74987BE520601D6800AC9614 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74987BE320601D6800AC9614 /* Main.storyboard */; };
 		74987BE720601D6800AC9614 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74987BE620601D6800AC9614 /* Assets.xcassets */; };
 		74987BEA20601D6800AC9614 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74987BE820601D6800AC9614 /* LaunchScreen.storyboard */; };
+		74BF4D5A20641DD500450B4C /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BF4D5920641DD500450B4C /* SignIn.swift */; };
+		74BF4D5C20641DE200450B4C /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BF4D5B20641DE200450B4C /* SignUp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		74987BE920601D6800AC9614 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		74987BEB20601D6800AC9614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74987BF1206026F600AC9614 /* FirebaseSocialLogin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FirebaseSocialLogin.entitlements; sourceTree = "<group>"; };
+		74BF4D5920641DD500450B4C /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
+		74BF4D5B20641DE200450B4C /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		EBC6460A6264BD5A3D1D32AE /* Pods-FirebaseSocialLogin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirebaseSocialLogin.release.xcconfig"; path = "Pods/Target Support Files/Pods-FirebaseSocialLogin/Pods-FirebaseSocialLogin.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -72,6 +76,8 @@
 				74987BE620601D6800AC9614 /* Assets.xcassets */,
 				74987BE820601D6800AC9614 /* LaunchScreen.storyboard */,
 				74987BEB20601D6800AC9614 /* Info.plist */,
+				74BF4D5920641DD500450B4C /* SignIn.swift */,
+				74BF4D5B20641DE200450B4C /* SignUp.swift */,
 			);
 			path = FirebaseSocialLogin;
 			sourceTree = "<group>";
@@ -252,6 +258,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				74987BE220601D6800AC9614 /* ViewController.swift in Sources */,
+				74BF4D5C20641DE200450B4C /* SignUp.swift in Sources */,
+				74BF4D5A20641DD500450B4C /* SignIn.swift in Sources */,
 				74987BE020601D6800AC9614 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

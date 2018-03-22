@@ -78,11 +78,30 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
         return logInButton
     }()
     
+    lazy var signUp: UIButton={
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
+        button.setTitle("Sign Up", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .blue
+        return button
+    }()
+    
+    lazy var signIn: UIButton={
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(handleSignIn), for: .touchUpInside)
+        button.setTitle("Sign In", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .lightGray
+        return button
+    }()
     
     //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        [fbLoginButton, customFbLoginButton, googleSignInButton, customGoogleSingInButton, twitterLoginButton].forEach{view.addSubview($0)}
+        [fbLoginButton, customFbLoginButton, googleSignInButton, customGoogleSingInButton, twitterLoginButton, signUp, signIn].forEach{view.addSubview($0)}
         prepareButtons()
         
         GIDSignIn.sharedInstance().uiDelegate = self
@@ -91,6 +110,16 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
     
     
     //MARK: Target actions
+    @objc func handleSignUp() {
+        print("Press signup")
+        self.performSegue(withIdentifier: "segue_ToSignUp", sender: nil)
+    }
+    
+    @objc func handleSignIn() {
+        print("Press signin")
+        self.performSegue(withIdentifier: "segue_ToSignIn", sender: nil)
+    }
+    
     @objc func handleFBLoginClick (){
         FBSDKLoginManager().logIn(withReadPermissions: ["public_profile", "email"], from: self) { (response, error) in
             if error != nil {
@@ -105,8 +134,6 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
     @objc func handleGoogleLoginClick() {
         GIDSignIn.sharedInstance().signIn()
     }
-    
-    
     
     
     //MARK: FBSDKLoginButtonDelegate methods
@@ -157,6 +184,18 @@ extension ViewController {
         fbLoginButtons()
         googleButtons()
         twitterButtons()
+        simpleLoginButtons()
+    }
+    fileprivate func simpleLoginButtons() {
+        signUp.leadingAnchor.constraint(equalTo: fbLoginButton.leadingAnchor).isActive = true
+        signUp.trailingAnchor.constraint(equalTo: fbLoginButton.trailingAnchor).isActive = true
+        signUp.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        signUp.topAnchor.constraint(equalTo: twitterLoginButton.bottomAnchor, constant: 20).isActive = true
+        
+        signIn.leadingAnchor.constraint(equalTo: fbLoginButton.leadingAnchor).isActive = true
+        signIn.trailingAnchor.constraint(equalTo: fbLoginButton.trailingAnchor).isActive = true
+        signIn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        signIn.topAnchor.constraint(equalTo: signUp.bottomAnchor, constant: 20).isActive = true
     }
     
     fileprivate func twitterButtons() {
