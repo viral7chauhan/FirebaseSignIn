@@ -30,7 +30,7 @@ class SignIn: UIViewController {
             
             if let currentUser = user {
                 print(currentUser)
-                self.performSegue(withIdentifier: "segue_ToHome", sender: nil)
+                self.dismiss(animated: true, completion: nil)
             }
         }
         
