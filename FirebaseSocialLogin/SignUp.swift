@@ -37,7 +37,7 @@ class SignUp: UIViewController {
                 Auth.auth().currentUser?.createProfileChangeRequest().commitChanges(completion: { (error) in
                     if let err = error {
                         print(err)
-                        self.performSegue(withIdentifier: "segue_ToHome", sender: nil)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 })
             }

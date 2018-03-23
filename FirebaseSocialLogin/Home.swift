@@ -8,11 +8,13 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class Home : UIViewController {
     
     @IBAction func Logout(_ sender: Any) {
-        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        try! Auth.auth().signOut()
+        self.dismiss(animated: true, completion: nil)
     }
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -13,30 +13,7 @@ import GoogleSignIn
 import TwitterKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
-    
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        if let error = error {
-            print(error)
-            return
-        }
-        
-        if let user = user {
-            print(user)
-        }
-        
-        let credential = GoogleAuthProvider.credential(withIDToken: user.authentication.idToken, accessToken: user.authentication.accessToken)
-        Auth.auth().signIn(with: credential) { (user, error) in
-            if let error = error {
-                print(error)
-                return
-            }
-            
-            if let user = user {
-                print("Successfully login with firebase google" ,user)
-            }
-        }
-    }
+class AppDelegate: UIResponder, UIApplicationDelegate {
     
 
     var window: UIWindow?
@@ -46,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         TWTRTwitter.sharedInstance()
         FirebaseApp.configure()
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
-        GIDSignIn.sharedInstance().delegate = self
+        
         
         TWTRTwitter.sharedInstance().start(withConsumerKey: "ZybO8Jt54wtpT3q4yb6l14Hyu", consumerSecret: "iaGgO5RRmR4Bhz4DbN846F8wfe1ETqkXzE4Sv5xOwIMAaydGEm")
         

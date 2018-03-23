@@ -13,7 +13,7 @@ import Firebase
 import GoogleSignIn
 import TwitterKit
 
-class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate {
+class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDelegate, GIDSignInDelegate {
 
     // MARK: Stored properties
     lazy var fbLoginButton: FBSDKLoginButton = {
@@ -70,6 +70,7 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
                     }
                     if let user = user {
                         print("Twitter user is login",user)
+                        self.loginCompletion();
                     }
                 }
             }
@@ -104,10 +105,14 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
         [fbLoginButton, customFbLoginButton, googleSignInButton, customGoogleSingInButton, twitterLoginButton, signUp, signIn].forEach{view.addSubview($0)}
         prepareButtons()
         
+        GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().uiDelegate = self
     }
 
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.loginCompletion();
+    }
     
     //MARK: Target actions
     @objc func handleSignUp() {
@@ -126,8 +131,11 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
                 print(error ?? "")
                 return
             }
-            print("Custom FB login successfully.")
-            self.showEmailAddress()
+            if let _ = response {
+                print("Custom FB login successfully.")
+                self.showEmailAddress()
+            }
+            
         }
     }
     
@@ -135,6 +143,30 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
         GIDSignIn.sharedInstance().signIn()
     }
     
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if let error = error {
+            print(error)
+            return
+        }
+        
+        if let user = user {
+            print(user)
+            let credential = GoogleAuthProvider.credential(withIDToken: user.authentication.idToken, accessToken: user.authentication.accessToken)
+            Auth.auth().signIn(with: credential) { (user, error) in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                if let user = user {
+                    print("Successfully login with firebase google" ,user)
+                    self.loginCompletion();
+                }
+            }
+        }
+        
+        
+    }
     
     //MARK: FBSDKLoginButtonDelegate methods
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
@@ -147,12 +179,25 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
             return
         }
         
-        print("Login successfully")
-        showEmailAddress()
+        
+        if let _ = result.token {
+            print("Login successfully")
+            showEmailAddress()
+        }
+        
     }
 
     
     //MARK: Custom methods
+    func loginCompletion() {
+        if let user = Auth.auth().currentUser {
+            self.performSegue(withIdentifier: "segue_ToHome", sender: user)
+        } else {
+            FBSDKLoginManager().logOut()
+            GIDSignIn.sharedInstance().signOut()
+        }
+    }
+    
     func showEmailAddress() {
         let credentials = FacebookAuthProvider.credential(withAccessToken: FBSDKAccessToken.current().tokenString)
         Auth.auth().signIn(with: credentials) { (user, error) in
@@ -163,6 +208,7 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInUIDel
             
             if let user = user {
                 print("User from firebase :\(user)")
+                self.loginCompletion();
             }
         }
         
